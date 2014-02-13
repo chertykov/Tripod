@@ -44,7 +44,7 @@ PI=3.141592;
  * Example 01 extended to create a large and short bolt.
  */
 
- Makerbolt();
+  Makerbolt();
 
 
 
@@ -54,7 +54,7 @@ PI=3.141592;
  * (Because we needed something where we can use Example 02...)
  */
 
-// nut_4_Makerbolt();
+ //nut_4_Makerbolt();
 
 
 
@@ -105,13 +105,13 @@ module Makerbolt()
 
  /* Screw thread parameters
   */
-    t_od=10;    // Thread outer diameter
+    t_od=11;    // Thread outer diameter
     t_st=2.5;   // Step/traveling per turn
     t_lf=55;    // Step angle degrees
     t_ln=20;    // Length of the threade section
     t_rs=PI/6;  // Resolution
     t_se=1;     // Thread ends style
-    t_gp=0;     // Gap between nut and bolt threads
+    t_gp=-0.12;     // Gap between nut and bolt threads
 
 
     difference()
@@ -141,13 +141,13 @@ module nut_4_Makerbolt()
 {
  /* Nut parameters.
   */
-    n_df=25;    // Distance between flats
-    n_hg=10;    // Thickness/Height
-    n_od=15;    // Outer diameter of the bolt to match
+    n_df=24;    // Distance between flats
+    n_hg=24;    // Thickness/Height
+    n_od=11;    // Outer diameter of the bolt to match
     n_st=2.5;   // Step height
     n_lf=55;    // Step Degrees
-    n_rs=0.5;   // Resolution
-    n_gp=0.3;   // Gap between nut and bolt
+    n_rs=PI/6;   // Resolution
+    n_gp=0.12;   // Gap between nut and bolt
 
 
     intersection()
@@ -167,14 +167,14 @@ module k_cyl(bnhg)
  /* Bolt/Nut parameters
   */
     k_cyl_hg=bnhg;   // Knurled cylinder height
-    k_cyl_od=16;   // Knurled cylinder outer* diameter
+    k_cyl_od=17;   // Knurled cylinder outer* diameter
 
     knurl_wd=5;      // Knurl polyhedron width
     knurl_hg=5;      // Knurl polyhedron height
-    knurl_dp=0.5;    // Knurl polyhedron depth
+    knurl_dp=1;    // Knurl polyhedron depth
 
     e_smooth=1;      // Cylinder ends smoothed height
-    s_smooth=20;      // [ 0% - 100% ] Knurled surface smoothing amount
+    s_smooth=5;      // [ 0% - 100% ] Knurled surface smoothing amount
 
     knurled_cyl(k_cyl_hg, k_cyl_od, 
                 knurl_wd, knurl_hg, knurl_dp, 
