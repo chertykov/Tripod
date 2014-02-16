@@ -1,4 +1,4 @@
 Tripod
 ======
 
-Soft tripod for Phone
+Soft tripod for cell phone.
