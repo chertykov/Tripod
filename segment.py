@@ -6,21 +6,21 @@ from solid.utils import *  # Not required, but the utils module is useful
 scad_file = 'segment.py.scad'
 
 # Segment body
-segment_h = 34
-segment_r = 6
+segment_h = 34.0
+segment_r = 6.0
 body = cylinder (r = segment_r,
                  h = segment_h)
 
 # Upper cone
-cone_upper_h = 1
-cone_upper_r1 = 3
+cone_upper_h = 1.0
+cone_upper_r1 = 3.0
 cone_upper_r2 = 1.8
 cone_upper = cylinder (r1 = cone_upper_r1,
                        r2 = cone_upper_r2,
                        h = cone_upper_h)
 
 #Lower cone
-cone_lower_h = 3
+cone_lower_h = 3.0
 cone_lower_r1 = 3.6
 cone_lower_r2 = 0.9
 cone_lower = cylinder (r1 = cone_lower_r1,
@@ -34,7 +34,7 @@ hole = cylinder (r = hole_r,
                  h = hole_h)
 
 # Slit
-slit_h = 10   # height without upper cone height
+slit_h = 10.0   # height without upper cone height
 slit_w = hole_r * 2
 
 slit = cube([segment_r, slit_w, slit_h + cone_upper_h])

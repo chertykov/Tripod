@@ -7,4 +7,7 @@ segment.py.scad : segment.py
 balljoint-test.py.scad : balljoint-test.py
 	python $< > $@
 
+plate.py.scad : plate.py
+	python $< > $@
+
 
