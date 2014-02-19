@@ -57,8 +57,12 @@ slot = rotate (a = slot_a, v = [0,1,0]) (slot)
 #sys.stderr.write("b.asin: %g\n" % (math.asin(((body_h-1) / 2.0) / body_r)))
 
 slot = rotate (a = 120) (slot)
-slot = translate([mount_x + c_x-u_x, 0, body_h - 1.5]) (slot) 
 
+body_upper_hole_r = mount_x + c_x - u_x
+slot = translate([body_upper_hole_r, 0, body_h - 1.5]) (slot) 
+
+
+nx = 
 sys.stderr.write("mount_r: %g\n cx: %g\n cy: %g\n ux: %g\nslot_a: %g\n"
                  % (mount_r, c_x, c_y, u_x, slot_a))
 
