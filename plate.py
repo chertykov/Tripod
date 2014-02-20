@@ -9,6 +9,32 @@ from segment import segment_r, cone_lower, cone_lower_h, hole, hole_r
 
 sin_60 = 0.86602540378
 sin_30 = 0.5
+sin_45 = 0.70710678118
+
+# Render quality
+print '$fn=32;'
+
+def rail (l, w, h, clearance=0):
+    leg_w = w * 4.0 / 6.0
+    box = back (w / 2.0) (cube ([l, w, h]))
+    cut_45 = left (0.5) (cube ([l+1, w, h]))
+    cut_45 = back (w) (cut_45)
+    cut_45 = rotate (a = 45, v = [1, 0, 0]) (cut_45)
+    cut_45 = up (h - 0.5) (cut_45)
+    cut_45 = back (leg_w / 2) (cut_45)
+
+
+    cut = left (0.5) (cube ([l + 1, w, h]))
+    cut = up (h - 0.5) (cut)
+    cut = back (w + leg_w / 2) (cut)
+
+    box -= cut
+    box -= cut_45
+    box -= mirror([0,1,0]) (cut)
+    box -= mirror([0,1,0]) (cut_45)
+    box1 = scale ([1, (w-.3) / w,1]) (box)
+    print scad_render (box-box1)
+    return box
 
 # Plate body
 body_h = 8.0
@@ -96,6 +122,41 @@ ball_clearance = 0.2
 ball_r = mount_x - 2
 ball_cut = up (body_h / 2) (sphere (r = ball_r + ball_clearance))
 
+
+# Rail
+rail_slot_h = body_h / 3
+rail_slot_space = (2 * (mount_x + mount_r) * math.pi
+                   - 3 * 2 * mount_r) / 2
+
+rail_slot_w = rail_slot_space / 3
+
+rail_slot_leg_w = rail_slot_w * 4.0 / 6.0
+
+rail_box = back (rail_slot_w/2) (cube ([body_r, rail_slot_w, rail_slot_h+1]))
+
+rail_cut_45 = left (0.5) (cube ([body_r+1, rail_slot_w, rail_slot_h]))
+rail_cut_45 = back (rail_slot_w) (rail_cut_45)
+rail_cut_45 = rotate (a = 45, v = [1, 0, 0]) (rail_cut_45)
+rail_cut_45 = up (rail_slot_h - 0.5) (rail_cut_45)
+rail_cut_45 = back (rail_slot_leg_w / 2) (rail_cut_45)
+
+rail_cut = left (0.5) (cube ([body_r+1, rail_slot_w, rail_slot_h]))
+rail_cut = up (rail_slot_h - 0.5) (rail_cut)
+rail_cut = back (rail_slot_w + rail_slot_leg_w / 2) (rail_cut)
+
+rail_box -= rail_cut
+rail_box -= rail_cut_45
+rail_box -= mirror([0,1,0]) (rail_cut)
+rail_box -= mirror([0,1,0]) (rail_cut_45)
+
+rail_box = rail (body_r, rail_slot_w, body_h / 2)
+
+rail_box = down (rail_slot_h) (rail_box)
+rail_box = rotate ([0,180,0]) (rail_box)
+
+sys.stderr.write("rail_slot_space: %g\n" % rail_slot_space)
+sys.stderr.write("rail_slot_w: %g\n" % rail_slot_w)
+sys.stderr.write("rail_slot_leg_w: %g\n" % rail_slot_leg_w)
 sys.stderr.write("mount_x: %g\n" % mount_x)
 sys.stderr.write("ball_r: %g\n" % ball_r)
 
@@ -103,8 +164,12 @@ draw = (knurled_body
         - slot
         - rotate (a = 120) (slot)
         - rotate (a = 240) (slot)
-        - ball_cut)
+        - ball_cut
+        - rail_box
+        - rotate (120) (rail_box)
+        - rotate (240) (rail_box))
 
-print '$fn=50;'
-print scad_render(draw)
+#draw = rail_box - rail_cut_45
+
+#print scad_render(draw)
 
