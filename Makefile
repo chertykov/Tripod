@@ -1,5 +1,5 @@
 
-all: segment.py.scad balljoint-test.py.scad
+all: segment.py.scad balljoint-test.py.scad plate.py.scad
 
 segment.py.scad : segment.py
 	python segment.py
