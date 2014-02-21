@@ -61,7 +61,7 @@ mount = (cylinder (r = mount_r, h = body_h)
          + up (body_h) (hole))
 
 # Distance from body center to leftmost side of segment mount
-mount_x = body_r * 0.62 - mount_r
+mount_x = body_r * 0.67 - mount_r
 
 mount = translate ([mount_r, 0 ,-body_h]) (mount)
 mount = rotate (a = -mount_a, v = [0,1,0]) (mount)
@@ -82,8 +82,6 @@ body_upper_hole_r = mount_x + c_x - u_x
 
 # Normal from slot to body center
 nr = sin_60 * body_upper_hole_r
-
-sys.stderr.write("nr: %g\n" % nr)
 
 # Distance from slot normal to upper hole center
 rh_h = sin_30 * body_upper_hole_r
@@ -114,10 +112,6 @@ slot = rotate (a = 120) (slot)
 slot = translate([body_upper_hole_r, 0, body_h - 1.5]) (slot) 
 
 
-#sys.stderr.write("mount_r: %g\n cx: %g\n cy: %g\n ux: %g\nslot_a: %g\n"
-#                 % (mount_r, c_x, c_y, u_x, slot_a))
-
-
 # Ball joint
 ball_clearance = 0.2
 ball_r = mount_x - 2
@@ -139,13 +133,15 @@ rail_slot_w = rail_slot_space / 3
 
 rail_slot_leg_w = rail_slot_w * 4.0 / 6.0
 
-rail_cut = right (0.5) (rail (body_r+1, rail_slot_w + 0.4, body_h / 3))
+rail_cut = rail (body_r+1, rail_slot_w + 0.4, rail_slot_h, clearance=0.1)
+rail_cut = right (0.5) (rail_cut)
 
-sys.stderr.write("rail_slot_space: %g\n" % rail_slot_space)
-sys.stderr.write("rail_slot_w: %g\n" % rail_slot_w)
-sys.stderr.write("rail_slot_leg_w: %g\n" % rail_slot_leg_w)
-sys.stderr.write("mount_x: %g\n" % mount_x)
-sys.stderr.write("ball_r: %g\n" % ball_r)
+if __name__ == "__main__":
+    sys.stderr.write("rail_slot_space: %g\n" % rail_slot_space)
+    sys.stderr.write("rail_slot_w: %g\n" % rail_slot_w)
+    sys.stderr.write("rail_slot_leg_w: %g\n" % rail_slot_leg_w)
+    sys.stderr.write("mount_x: %g\n" % mount_x)
+    sys.stderr.write("ball_r: %g\n" % ball_r)
 
 draw = (knurled_body
         - slot
@@ -157,7 +153,8 @@ draw = (knurled_body
         - rotate (240) (rail_cut)
 	+ ball)
 
-print scad_render(draw)
+if __name__ == "__main__":
+    print scad_render(draw)
 
 
 

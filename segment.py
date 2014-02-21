@@ -38,9 +38,10 @@ slit_w = hole_r * 2
 slit = cube([segment_r, slit_w, slit_h + cone_upper_h])
 
 
-d = (((body - down(0.1)(cone_lower))
-      + up(34)(cone_upper))
-     - hole
-     - back(slit_w / 2) (up (segment_h + cone_upper_h - slit_h) (slit)))
+segment = (((body - down(0.1)(cone_lower))
+            + up(34)(cone_upper))
+           - hole
+           - back(slit_w / 2) (up (segment_h + cone_upper_h - slit_h) (slit)))
 
-print scad_render(d)
+if __name__ == "__main__":
+    print scad_render(segment)
