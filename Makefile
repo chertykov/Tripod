@@ -1,13 +1,14 @@
 
-all: segment.py.scad balljoint-test.py.scad plate.py.scad
+all: segment.scad balljoint-test.scad plate.scad clamp.scad
 
-segment.py.scad : segment.py
+segment.scad : segment.py
 	python segment.py
 
-balljoint-test.py.scad : balljoint-test.py
+balljoint-test.scad : balljoint-test.py
 	python $< > $@
 
-plate.py.scad : plate.py
+plate.scad : plate.py
 	python $< > $@
 
-
+clamp.scad : clamp.py
+	python $< > $@
