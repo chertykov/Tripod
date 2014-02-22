@@ -12,7 +12,7 @@ sin_30 = 0.5
 sin_45 = 0.70710678118
 
 # Render quality
-print '$fn=32;'
+print '$fn=64;'
 
 def rail (l, w, h, clearance = 0):
     leg_w = w * 4.0 / 6.0
@@ -67,7 +67,6 @@ mount = translate ([mount_r, 0 ,-body_h]) (mount)
 mount = rotate (a = -mount_a, v = [0,1,0]) (mount)
 mount = right(mount_x) (mount)
 
-# To knurl the body
 knurled_body -= mount
 knurled_body -= rotate (a = 120) (mount)
 knurled_body -= rotate (a = 240) (mount)
@@ -101,7 +100,7 @@ slot_cyl = cylinder (r = slot_w / 2, h = slot_l)
 slot_cyl = rotate (a = 90, v = [0,1,0]) (slot_cyl)
 
 # Knot fixing sphere
-slot_sphere = right (slot_l) (sphere (r = slot_w * 1))
+slot_sphere = right (slot_l) (sphere (r = slot_w * 1.3))
 
 slot += slot_cyl + slot_sphere
 slot_a = math.degrees (math.asin (((body_h - 1.5) / 3) / body_r))
@@ -117,11 +116,21 @@ ball_clearance = 0.2
 ball_r = mount_x - 2
 ball_cut = up (body_h / 2) (sphere (r = ball_r + ball_clearance))
 
-# Ball
+# Ball and hex
+hex_r2 = ball_r / 1.8
+hex_r1 = hex_r2 * 0.8
+
 ball = sphere (r = ball_r)
+ball -= down (ball_r - 1) (cylinder (r1 = 0,
+				     r2 = hex_r1,
+				     h = hex_r1,
+				     segments=6))
+ball -= (down (ball_r - 1 - hex_r1)
+	 (cylinder (r1 = hex_r1, r2 = hex_r2,
+		    h = ball_r - 1 - hex_r1 + body_h / 2 + 0.01, segments=6)))
+ball -= up (body_h / 2) (cylinder (r = ball_r+1, h = ball_r))
 ball = up (body_h / 2) (ball)
-ball -= up (body_h) (cylinder (r = ball_r+1, h = ball_r))
-ball -= cylinder (r=4.5, h = ball_r * 2, segments=6)
+#ball -= cylinder (r=4.5, h = ball_r * 2, segments=6)
 
 
 
@@ -133,7 +142,7 @@ rail_slot_w = rail_slot_space / 3
 
 rail_slot_leg_w = rail_slot_w * 4.0 / 6.0
 
-rail_cut = rail (body_r+1, rail_slot_w + 0.4, rail_slot_h, clearance=0.1)
+rail_cut = rail (body_r+1, rail_slot_w + 0.5, rail_slot_h, clearance=0.1)
 rail_cut = right (0.5) (rail_cut)
 
 if __name__ == "__main__":
@@ -143,33 +152,17 @@ if __name__ == "__main__":
     sys.stderr.write("mount_x: %g\n" % mount_x)
     sys.stderr.write("ball_r: %g\n" % ball_r)
 
-draw = (knurled_body
-        - slot
-        - rotate (a = 120) (slot)
-        - rotate (a = 240) (slot)
-        - ball_cut
-        - rail_cut
-        - rotate (120) (rail_cut)
-        - rotate (240) (rail_cut)
-	+ ball)
+draw = rotate ([0,180,0]) (knurled_body
+			   - slot
+			   - rotate (a = 120) (slot)
+			   - rotate (a = 240) (slot)
+			   - ball_cut
+			   - rail_cut
+			   - rotate (120) (rail_cut)
+			   - rotate (240) (rail_cut)
+			   + ball)
+
+#draw = ball
 
 if __name__ == "__main__":
     print scad_render(draw)
-
-
-
-
-#draw = rail_cut
-#draw = (translate ([-body_r,-rail_slot_w * 1.5 / 2,0]) (cube ([body_r, rail_slot_w * 1.5, body_h/2]))
-#	- rail_cut)
-#draw = up (body_h/2) (rotate ([0,180,0]) (draw))
-
-#dd = draw
-###
-#draw = rail_box = up (0) (rotate ([0,180,0]) (rail (body_r, rail_slot_w, body_h / 3, clearance = 0.25)))
-#draw -= translate ([body_r-10.0,-rail_slot_w * 1.5 / 2, -body_h+1]) (cube ([body_r, rail_slot_w * 1.5, body_h]))
-#draw += translate ([0, -body_h*1.25 / 2, 0.25]) (cube([body_h*1.25,body_h*1.25,body_h/3]))
-#draw = up (body_h /3) (left (20) (draw)) + dd
-
-#print scad_render(dd)
-
