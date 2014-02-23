@@ -11,6 +11,8 @@ sin_60 = 0.86602540378
 sin_30 = 0.5
 sin_45 = 0.70710678118
 
+deb = 0
+
 # Render quality
 print '$fn=64;'
 
@@ -40,7 +42,14 @@ def rail (l, w, h, clearance = 0):
 # Plate body
 body_h = 8.0
 body_r = 25.0
-body = cylinder (r = body_r, h = body_h)
+body_bevel = 0.5
+
+body = cylinder (r1 = body_r - body_bevel, r2= body_r, h = body_bevel)
+body += up (body_bevel) (cylinder (r = body_r,
+				   h = body_h - body_bevel * 2))
+body += up (body_h - body_bevel) (cylinder (r2 = body_r - body_bevel,
+					    r1= body_r,
+					    h = body_bevel))
 
 # Knurl
 knurl_r = 1.0
@@ -49,7 +58,7 @@ knurl = down(0.5) (left(body_r) (cylinder (r = knurl_r, h = body_h + 1)))
 for k in xrange (36):
     body -= knurl
     body = rotate (a = 10.0) (body)
-    
+
 knurled_body = rotate (a = 5.0) (body)
 
 # Leg mount
@@ -82,7 +91,7 @@ body_upper_hole_r = mount_x + c_x - u_x
 # Normal from slot to body center
 nr = sin_60 * body_upper_hole_r
 
-# Distance from slot normal to upper hole center
+# Distance from slot normal to center of the upper hole
 rh_h = sin_30 * body_upper_hole_r
 
 # Distance of body cut by slot
@@ -98,27 +107,34 @@ slot = back (slot_w / 2) (cube ([slot_l + 1, slot_w , body_h]))
 # Slot round
 slot_cyl = cylinder (r = slot_w / 2, h = slot_l)
 slot_cyl = rotate (a = 90, v = [0,1,0]) (slot_cyl)
+slot_bevel = left (slot_w / 2) (cylinder (r = slot_w / 2, h = 1))
+slot_bevel = rotate ([0, -90, 0]) (slot_bevel)
+slot_bevel = up (slot_w) (slot_bevel)
+slot_bevel = rotate ([15 , -45, 0]) (slot_bevel)
+slot_bevel = right (0.5 + hole_r) (slot_bevel)
+slot_bevel = down (slot_w / 2) (slot_bevel)
+slot_cyl += slot_bevel
 
 # Knot fixing sphere
 slot_sphere = right (slot_l) (sphere (r = slot_w * 1.3))
 
 slot += slot_cyl + slot_sphere
-slot_a = math.degrees (math.asin (((body_h - 1.5) / 3) / body_r))
+slot_a = math.degrees (math.asin (((body_h - slot_w / 2) / 3) / body_r))
+slot = rotate ([0, slot_a, 120]) (slot)
 
-slot = rotate (a = slot_a, v = [0,1,0]) (slot)
-slot = rotate (a = 120) (slot)
-
-slot = translate([body_upper_hole_r, 0, body_h - 1.5]) (slot) 
+slot = translate([body_upper_hole_r, 0, body_h - slot_w / 2]) (slot) 
 
 
 # Ball joint
 ball_clearance = 0.2
 ball_r = mount_x - 2
-ball_cut = up (body_h / 2) (sphere (r = ball_r + ball_clearance))
+ball_cut_r = ball_r + ball_clearance
+ball_cut = up (body_h / 2) (sphere (r = ball_cut_r))
 
 # Ball and hex
 hex_r2 = ball_r / 1.8
 hex_r1 = hex_r2 * 0.8
+hex_h = ball_r - 1 - hex_r1 + body_h / 2
 
 ball = sphere (r = ball_r)
 ball -= down (ball_r - 1) (cylinder (r1 = 0,
@@ -127,11 +143,13 @@ ball -= down (ball_r - 1) (cylinder (r1 = 0,
 				     segments=6))
 ball -= (down (ball_r - 1 - hex_r1)
 	 (cylinder (r1 = hex_r1, r2 = hex_r2,
-		    h = ball_r - 1 - hex_r1 + body_h / 2 + 0.01, segments=6)))
+		    h = hex_h + 0.01, segments=6)))
 ball -= up (body_h / 2) (cylinder (r = ball_r+1, h = ball_r))
 ball = up (body_h / 2) (ball)
-#ball -= cylinder (r=4.5, h = ball_r * 2, segments=6)
 
+## Plate bevel
+rr = math.sqrt(ball_cut_r * ball_cut_r - body_h/2 * body_h/2)
+ball_joint_bevel =  up(body_h - 0.5) (cylinder (r1 = rr, r2 = rr + 2, h = 1))
 
 
 # Rails
@@ -152,17 +170,19 @@ if __name__ == "__main__":
     sys.stderr.write("mount_x: %g\n" % mount_x)
     sys.stderr.write("ball_r: %g\n" % ball_r)
 
-draw = rotate ([0,180,0]) (knurled_body
-			   - slot
-			   - rotate (a = 120) (slot)
-			   - rotate (a = 240) (slot)
-			   - ball_cut
-			   - rail_cut
-			   - rotate (120) (rail_cut)
-			   - rotate (240) (rail_cut)
-			   + ball)
-
-#draw = ball
+if bool(deb):
+    draw = deb
+else:
+    draw = rotate ([0,180,0]) (knurled_body
+			       - slot
+			       - rotate (a = 120) (slot)
+			       - rotate (a = 240) (slot)
+			       - ball_cut
+			       - ball_joint_bevel
+			       - rail_cut
+			       - rotate (120) (rail_cut)
+			       - rotate (240) (rail_cut)
+			       + ball)
 
 if __name__ == "__main__":
     print scad_render(draw)

@@ -11,7 +11,7 @@ body = cylinder (r = segment_r,
 
 # Upper cone
 cone_upper_h = 1.0
-cone_upper_r1 = 3.0
+cone_upper_r1 = 3.3
 cone_upper_r2 = 1.8
 cone_upper = cylinder (r1 = cone_upper_r1,
                        r2 = cone_upper_r2,
@@ -32,16 +32,19 @@ hole = cylinder (r = hole_r,
                  h = hole_h)
 
 # Slit
-slit_h = 10.0   # height without upper cone height
-slit_w = hole_r * 2
+slit_h = segment_r * 2 * 0.85   # slit height without upper cone height
+slit_w = hole_r * 1.7
 
-slit = cube([segment_r, slit_w, slit_h + cone_upper_h])
+slit = cube([segment_r + 1, slit_w, slit_h + cone_upper_h])
 
 
-segment = (((body - down(0.1)(cone_lower))
-            + up(34)(cone_upper))
+segment = (body
+	   - down(0.1)(cone_lower)
+	   + up(segment_h)(cone_upper)
            - hole
            - back(slit_w / 2) (up (segment_h + cone_upper_h - slit_h) (slit)))
 
 if __name__ == "__main__":
+    # Render quality
+    print '$fn=24;'
     print scad_render(segment)

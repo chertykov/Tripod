@@ -7,7 +7,8 @@ from solid.utils import * # Not required, but the utils module is useful
 
 from plate import *
 
-rail_clearance = 0.25
+rail_clearance = 0.2
+
 clamp_h = (rail_slot_h + rail_clearance
            + 1.5/3.0 * (ball_r - body_h / 2))
 
@@ -21,17 +22,18 @@ rail = up (0.25) (rail (clamp_w + clamp_ball_cut_r,
                              rail_slot_w, rail_slot_h, clearance = 0.25))
 rail = rotate ([0,180,0]) (rail)
 
-rail1 = cylinder(r = mount_x, h = clamp_h - rail_slot_h)
-rail1 *= back (rail_slot_leg_w / 2) (cube ([clamp_ball_cut_r + 1, rail_slot_leg_w, clamp_h]))
+rail1 = cylinder(r = mount_x*1.1, h = clamp_h - rail_slot_h)
+rail1 *= back (rail_slot_leg_w / 2) (cube ([clamp_w + clamp_ball_cut_r,
+					    rail_slot_leg_w,
+					    clamp_h]))
 rail += rail1
 rail -= down (body_h / 2 + 0.25) (sphere (clamp_ball_cut_r))
+# Rubber groove
 groove_r = 0.25 * 4
 groove = rotate ([90,0,-45]) (cylinder (r = groove_r, h = rail_slot_w))
-groove = right (mount_x + sin_45 * rail_slot_leg_w / 2) (up (groove_r) (groove))
+groove = right (mount_x*1.1 + sin_45 * rail_slot_leg_w / 2) (up (groove_r) (groove))
+
 rail -= groove
 rail -= mirror ([0,1,0]) (groove)
-
-# Rubber groove
-groove_r = 1
 
 print scad_render(rail)
