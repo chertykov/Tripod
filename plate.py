@@ -134,22 +134,25 @@ ball_cut = up (body_h / 2) (sphere (r = ball_cut_r))
 # Ball and hex
 hex_r2 = ball_r / 1.8
 hex_r1 = hex_r2 * 0.8
-hex_h = ball_r - 1 - hex_r1 + body_h / 2
+hex_r1 = hex_r2
+
+hex1_h = hex_r1 / math.tan (math.radians (55))
+hex_h = ball_r - 1 - hex1_h + body_h / 2
 
 ball = sphere (r = ball_r)
 ball -= down (ball_r - 1) (cylinder (r1 = 0,
 				     r2 = hex_r1,
-				     h = hex_r1,
+				     h = hex1_h + 0.05,
 				     segments=6))
-ball -= (down (ball_r - 1 - hex_r1)
+ball -= (down (ball_r - 1 - hex1_h )
 	 (cylinder (r1 = hex_r1, r2 = hex_r2,
-		    h = hex_h + 0.01, segments=6)))
+		    h = hex_h + 0.05, segments=6)))
 ball -= up (body_h / 2) (cylinder (r = ball_r+1, h = ball_r))
 ball = up (body_h / 2) (ball)
 
 ## Plate bevel
 rr = math.sqrt(ball_cut_r * ball_cut_r - body_h/2 * body_h/2)
-ball_joint_bevel =  up(body_h - 0.5) (cylinder (r1 = rr, r2 = rr + 2, h = 1))
+ball_joint_bevel =  up(body_h - 0.25) (cylinder (r1 = rr, r2 = rr + 2, h = 1))
 
 
 # Rails
