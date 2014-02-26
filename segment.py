@@ -46,5 +46,5 @@ segment = (body
 
 if __name__ == "__main__":
     # Render quality
-    print '$fn=24;'
+    print '$fn=32;'
     print scad_render(segment)
